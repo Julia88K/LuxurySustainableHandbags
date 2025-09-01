@@ -261,7 +261,7 @@ body {
 
 .prev { left: 1rem; }
 .next { right: 1rem; }
-}
+
 
 #contact-form {
     margin-top: 1.5rem;
@@ -320,3 +320,4 @@ body {
 .footer p {
     margin: 0.4rem 0;
     font-family: 'Raleway', sans-serif;
+}
