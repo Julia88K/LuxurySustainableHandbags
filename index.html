@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle Vie - Luxury Sustainable Handbags</title>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Nouvelle Vie</div>
+            <ul class="nav-links">
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#favorites">Favorites (<span id="fav-count">0</span>)</a></li>
+                <li><a href="#cart">Cart (<span id="cart-count">0</span>)</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Luxury Meets Sustainability</h1>
+            <a href="#gallery" class="cta-button">Shop Now</a>
+        </div>
+    </section>
+
+   <!-- Product Gallery -->
+<section class="gallery" id="gallery">
+    <div class="product-card">
+        <img src="images/bag1.jpg" alt="Handbag 1">
+        <div class="product-info">
+            <p class="product-description">Elegant recycled leather handbag</p>
+            <p class="product-price">$120</p>
+            <span class="favorite">&#10084;</span>
+            <button class="add-to-cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="images/bag2.jpg" alt="Handbag 2">
+        <div class="product-info">
+            <p class="product-description">Chic eco-friendly tote bag</p>
+            <p class="product-price">$95</p>
+            <span class="favorite">&#10084;</span>
+            <button class="add-to-cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="images/bag3.jpg" alt="Handbag 3">
+        <div class="product-info">
+            <p class="product-description">Stylish sustainable crossbody</p>
+            <p class="product-price">$110</p>
+            <span class="favorite">&#10084;</span>
+            <button class="add-to-cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="images/bag4.jpg" alt="Handbag 4">
+        <div class="product-info">
+            <p class="product-description">Luxury recycled clutch</p>
+            <p class="product-price">$80</p>
+            <span class="favorite">&#10084;</span>
+            <button class="add-to-cart">Add to Cart</button>
+        </div>
+    </div>
+</section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+    <button class="prev">&#10094;</button>
+    <div class="testimonial-slider">
+        <div class="testimonial active">
+            <p>"I love how stylish and eco-friendly these bags are!"</p>
+            <h4>- Emma R.</h4>
+        </div>
+        <div class="testimonial">
+            <p>"Finally, sustainable luxury that feels premium."</p>
+            <h4>- Sophia M.</h4>
+        </div>
+        <div class="testimonial">
+            <p>"Beautifully crafted handbags with a conscience."</p>
+            <h4>- Olivia K.</h4>
+        </div>
+    </div>
+    <button class="next">&#10095;</button>
+</section>
+
+
+    <!-- Footer -->
+    <footer id="contact">
+        <p>Contact us: info@nouvellevie.com | +1 234 567 890</p>
+        <p>&copy; 2025 Nouvelle Vie. All rights reserved.</p>
+
+    <!-- Kontaktformular -->
+    <form id="contact-form">
+        <h3>Send us a message</h3>
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <textarea name="message" placeholder="Your Message" rows="4" required></textarea>
+        <button type="submit">Send</button>
+    </form>
+    
+    </footer>
+
+    <!-- Cart Modal -->
+<div id="cart-modal" class="cart-modal">
+    <div class="cart-content">
+        <span class="close-cart">&times;</span>
+        <h2>Your Cart</h2>
+        <div id="cart-items"></div>
+        <p id="cart-total">Total: $0</p>
+        <button id="checkout-button">Checkout</button>
+    </div>
+</div>
+
+    <!-- Favorites Modal -->
+<div id="favorites-modal" class="cart-modal">
+    <div class="cart-content">
+        <span class="close-favorites">&times;</span>
+        <h2>Your Favorites</h2>
+        <div id="favorite-items"></div>
+    </div>
+</div> 
+
+    <script src="script.js"></script>
+
+</body>
+</html>
