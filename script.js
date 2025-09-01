@@ -1,45 +1,85 @@
 
-// Favoriten toggeln
-//document.querySelectorAll('.favorite').forEach(heart => {
-    //heart.addEventListener('click', () => {
-       // heart.classList.toggle('favorited');
-        //if(heart.classList.contains('favorited')){
-        //    heart.style.color = '#ff0000';
-        //} else {
-        //    heart.style.color = '#d6336c';
-        //}
-    //});
-//});
-
+// ---------------- CART ----------------
 let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
 document.querySelectorAll('.add-to-cart').forEach((btn, index) => {
-    btn.addEventListener('click', () => {
-        cart.push(index); // oder Produkt-ID
-        localStorage.setItem('cart', JSON.stringify(cart));
-        updateCartCount();
-    });
+  btn.addEventListener('click', () => {
+    cart.push(index); // simple product index
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartCount();
+  });
 });
 
-function updateCartCount(){
-    const cartCount = document.querySelector('#cart-count');
-    if(cartCount) cartCount.textContent = cart.length;
+function updateCartCount() {
+  const cartCount = document.querySelector('#cart-count');
+  if (cartCount) cartCount.textContent = cart.length;
+}
+updateCartCount();
+
+const cartModal = document.getElementById('cart-modal');
+const cartItemsContainer = document.getElementById('cart-items');
+const cartTotal = document.getElementById('cart-total');
+const checkoutButton = document.getElementById('checkout-button');
+
+// Open/Close cart
+const cartLink = document.querySelector('a[href="#cart"]');
+cartLink?.addEventListener('click', (e) => {
+  e.preventDefault();
+  renderCart();
+  cartModal.style.display = 'flex';
+  cartModal.setAttribute('aria-hidden', 'false');
+});
+document.querySelector('.close-cart')?.addEventListener('click', () => {
+  cartModal.style.display = 'none';
+  cartModal.setAttribute('aria-hidden', 'true');
+});
+
+// Render Cart
+function renderCart() {
+  cartItemsContainer.innerHTML = '';
+  let total = 0;
+
+  cart.forEach((index, i) => {
+    const productCard = document.querySelectorAll('.product-card')[index];
+    if (!productCard) return;
+    const name = productCard.querySelector('.product-description').textContent;
+    const price = parseFloat(productCard.querySelector('.product-price').textContent.replace('$',''));
+
+    total += price;
+
+    const itemDiv = document.createElement('div');
+    itemDiv.classList.add('cart-item');
+    itemDiv.innerHTML = `
+      <span>${name} - $${price}</span>
+      <button data-index="${i}">Remove</button>
+    `;
+    cartItemsContainer.appendChild(itemDiv);
+  });
+
+  cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+
+  // Remove function
+  cartItemsContainer.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const removeIndex = btn.getAttribute('data-index');
+      cart.splice(removeIndex, 1);
+      localStorage.setItem('cart', JSON.stringify(cart));
+      updateCartCount();
+      renderCart();
+    });
+  });
 }
 
-// ---------- FAVORITES ----------
+// ---------------- FAVORITES ----------------
 const productCards = Array.from(document.querySelectorAll('.product-card'));
 let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
 
 function saveFavorites() {
   localStorage.setItem('favorites', JSON.stringify(favorites));
 }
-
-function isFavorite(i) {
-  return favorites.includes(i);
-}
-
+function isFavorite(i) { return favorites.includes(i); }
 function updateHeart(i) {
-  const heart = productCards[i].querySelector('.favorite');
+  const heart = productCards[i]?.querySelector('.favorite');
   if (!heart) return;
   if (isFavorite(i)) {
     heart.classList.add('favorited');
@@ -53,12 +93,10 @@ function updateHeart(i) {
     heart.title = 'Add to favorites';
   }
 }
-
 function updateFavCount() {
   const el = document.getElementById('fav-count');
   if (el) el.textContent = favorites.length;
 }
-
 function toggleFavorite(i) {
   if (isFavorite(i)) {
     favorites = favorites.filter(x => x !== i);
@@ -70,7 +108,7 @@ function toggleFavorite(i) {
   updateFavCount();
 }
 
-// Hearts initialisieren (nur EIN Listener pro Herz!)
+// Hearts init
 productCards.forEach((card, i) => {
   const heart = card.querySelector('.favorite');
   if (!heart) return;
@@ -79,25 +117,21 @@ productCards.forEach((card, i) => {
 });
 updateFavCount();
 
-// ---------- FAVORITES MODAL ----------
+// Favorites modal
 const favoritesModal = document.getElementById('favorites-modal');
 const favoriteItemsContainer = document.getElementById('favorite-items');
-
 const favLink = document.querySelector('a[href="#favorites"]');
-if (favLink) {
-  favLink.addEventListener('click', (e) => {
-    e.preventDefault();
-    renderFavorites();
-    favoritesModal.style.display = 'flex';
-  });
-}
 
-const closeFav = document.querySelector('.close-favorites');
-if (closeFav) {
-  closeFav.addEventListener('click', () => {
-    favoritesModal.style.display = 'none';
-  });
-}
+favLink?.addEventListener('click', (e) => {
+  e.preventDefault();
+  renderFavorites();
+  favoritesModal.style.display = 'flex';
+  favoritesModal.setAttribute('aria-hidden', 'false');
+});
+document.querySelector('.close-favorites')?.addEventListener('click', () => {
+  favoritesModal.style.display = 'none';
+  favoritesModal.setAttribute('aria-hidden', 'true');
+});
 
 function renderFavorites() {
   favoriteItemsContainer.innerHTML = '';
@@ -105,7 +139,6 @@ function renderFavorites() {
     favoriteItemsContainer.innerHTML = '<p>No favorites yet.</p>';
     return;
   }
-
   favorites.forEach(i => {
     const card = productCards[i];
     if (!card) return;
@@ -128,7 +161,6 @@ function renderFavorites() {
     favoriteItemsContainer.appendChild(row);
   });
 
-  // Remove-Buttons im Modal
   favoriteItemsContainer.querySelectorAll('.remove-fav').forEach(btn => {
     btn.addEventListener('click', () => {
       const idx = Number(btn.dataset.index);
@@ -138,87 +170,109 @@ function renderFavorites() {
   });
 }
 
-
-// Initial
-updateCartCount();
-
+// ---------------- TESTIMONIALS ----------------
 let currentIndex = 0;
 const testimonials = document.querySelectorAll('.testimonial');
 const total = testimonials.length;
 
 function showTestimonial(index) {
-    testimonials.forEach((t, i) => t.classList.remove('active'));
-    testimonials[index].classList.add('active');
+  testimonials.forEach((t) => t.classList.remove('active'));
+  testimonials[index].classList.add('active');
 }
-
-// Initial anzeigen
 showTestimonial(currentIndex);
 
-// Automatisches wechseln alle 5 Sekunden
 setInterval(() => {
-    currentIndex = (currentIndex + 1) % total;
-    showTestimonial(currentIndex);
+  currentIndex = (currentIndex + 1) % total;
+  showTestimonial(currentIndex);
 }, 5000);
 
-// Pfeile
-document.querySelector('.next').addEventListener('click', () => {
-    currentIndex = (currentIndex + 1) % total;
-    showTestimonial(currentIndex);
+document.querySelector('.next')?.addEventListener('click', () => {
+  currentIndex = (currentIndex + 1) % total;
+  showTestimonial(currentIndex);
+});
+document.querySelector('.prev')?.addEventListener('click', () => {
+  currentIndex = (currentIndex - 1 + total) % total;
+  showTestimonial(currentIndex);
 });
 
-document.querySelector('.prev').addEventListener('click', () => {
-    currentIndex = (currentIndex - 1 + total) % total;
-    showTestimonial(currentIndex);
-});
+// ---------------- MEMBERSHIP ----------------
+const memberLink = document.getElementById('open-member');
+const heroMember = document.getElementById('hero-member');
+const memberModal = document.getElementById('member-modal');
+const closeMember = document.querySelector('.close-member');
+const memberForm = document.getElementById('member-form');
+const memberSuccess = document.getElementById('member-success');
+const memberCountEl = document.getElementById('member-count');
 
-const cartModal = document.getElementById('cart-modal');
-const cartItemsContainer = document.getElementById('cart-items');
-const cartTotal = document.getElementById('cart-total');
-const checkoutButton = document.getElementById('checkout-button');
+// Init members from localStorage
+let members = JSON.parse(localStorage.getItem('members') || '[]');
+updateMemberCount();
 
-// Öffnen/Schließen
-document.querySelector('a[href="#cart"]').addEventListener('click', (e) => {
-    e.preventDefault();
-    renderCart();
-    cartModal.style.display = 'flex';
-});
-
-document.querySelector('.close-cart').addEventListener('click', () => {
-    cartModal.style.display = 'none';
-});
-
-// Render Cart
-function renderCart() {
-    cartItemsContainer.innerHTML = '';
-    let total = 0;
-
-    cart.forEach((index, i) => {
-        const productCard = document.querySelectorAll('.product-card')[index];
-        const name = productCard.querySelector('.product-description').textContent;
-        const price = parseFloat(productCard.querySelector('.product-price').textContent.replace('$',''));
-
-        total += price;
-
-        const itemDiv = document.createElement('div');
-        itemDiv.classList.add('cart-item');
-        itemDiv.innerHTML = `
-            <span>${name} - $${price}</span>
-            <button data-index="${i}">Remove</button>
-        `;
-        cartItemsContainer.appendChild(itemDiv);
-    });
-
-    cartTotal.textContent = `Total: $${total.toFixed(2)}`;
-
-    // Remove Funktion
-    cartItemsContainer.querySelectorAll('button').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const removeIndex = btn.getAttribute('data-index');
-            cart.splice(removeIndex, 1);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartCount();
-            renderCart();
-        });
-    });
+function openMemberModal(e) {
+  e?.preventDefault();
+  if (!memberModal) return;
+  memberModal.style.display = 'flex';
+  memberModal.setAttribute('aria-hidden', 'false');
+  setTimeout(() => document.getElementById('m-name')?.focus(), 50);
+}
+function closeMemberModal() {
+  if (!memberModal) return;
+  memberModal.style.display = 'none';
+  memberModal.setAttribute('aria-hidden', 'true');
 }
 
+memberLink?.addEventListener('click', openMemberModal);
+heroMember?.addEventListener('click', openMemberModal);
+closeMember?.addEventListener('click', closeMemberModal);
+memberModal?.addEventListener('click', (e) => {
+  if (e.target === memberModal) closeMemberModal();
+});
+
+function setError(id, msg) {
+  const small = document.querySelector(`.error[data-for="${id}"]`);
+  if (small) small.textContent = msg || '';
+}
+function clearErrors() {
+  ['m-name','m-email','m-consent'].forEach(id => setError(id, ''));
+}
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+function updateMemberCount() {
+  if (memberCountEl) memberCountEl.textContent = members.length;
+}
+
+memberForm?.addEventListener('submit', (e) => {
+  e.preventDefault();
+  clearErrors();
+  memberSuccess.hidden = true;
+
+  const name = document.getElementById('m-name')?.value.trim();
+  const email = document.getElementById('m-email')?.value.trim().toLowerCase();
+  const pref = document.getElementById('m-preferences')?.value || '';
+  const consent = document.getElementById('m-consent')?.checked;
+
+  let ok = true;
+  if (!name) { setError('m-name', 'Ange ditt namn.'); ok = false; }
+  if (!email || !isValidEmail(email)) { setError('m-email', 'Ange en giltig e-post.'); ok = false; }
+  if (!consent) { setError('m-consent', 'Vi behöver ditt samtycke.'); ok = false; }
+
+  if (ok && members.some(m => m.email === email)) {
+    setError('m-email', 'Den här e-posten är redan medlem.');
+    ok = false;
+  }
+  if (!ok) return;
+
+  const newMember = { name, email, pref, joinedAt: new Date().toISOString() };
+  members.push(newMember);
+  localStorage.setItem('members', JSON.stringify(members));
+  updateMemberCount();
+
+  memberForm.reset();
+  memberSuccess.hidden = false;
+
+  setTimeout(() => {
+    memberSuccess.hidden = true;
+    closeMemberModal();
+  }, 2200);
+});
